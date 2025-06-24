@@ -1,5 +1,4 @@
 import os.path
-import json
 import sys
 
 class Account:

@@ -1,4 +1,6 @@
 import os.path
+import json
+import sys
 
 class Account:
 
@@ -44,8 +46,9 @@ class Account:
 
 def main():
     user = first_time_setup()
-    what_does_user_want(user)
-    aftermath(user)
+    while True:
+        what_does_user_want(user)
+        aftermath(user)
 
 def aftermath(user):
     # Updates account.txt file
@@ -55,8 +58,7 @@ def aftermath(user):
             y_n = input("Y/N: ").lower()
             if y_n == "y":
                 os.remove("account.txt")
-                print("Your account has been successfully terminated")
-                break
+                sys.exit("Your account has been successfully terminated")
             elif y_n == "n":
                 print("Your account is safe and still with us!")
                 break
@@ -90,7 +92,7 @@ def record(user, action):
 
 def what_does_user_want(user):
     print("What would you like to do? Please type one of the below")
-    ask = input("Deposit // Withdraw // History // Delete Account: ").lower()
+    ask = input("Deposit // Withdraw // History // Delete Account // Exit: ").lower()
     # Asks user for their action
     while True:
         if ask in ["deposit", "d"]:
@@ -109,6 +111,8 @@ def what_does_user_want(user):
         elif ask in ["delete account", "delete", "del"]:
             user.delete()
             break
+        elif ask in ["exit", "e"]:
+            sys.exit("Thank you for using our service!")
         else:
             print("Invalid function, please try again")
             ask = input("Deposit // Withdraw // Delete Account: ")
@@ -129,12 +133,13 @@ def first_time_setup():
 
     else:
         # Creates new account with 0 amount
-        print("No account deleted")
+        print("No account detected...\nCreating new account...")
         username = input("What is your name? ").title()
         with open("account.txt", "a") as file:
             file.write(f"Username: {username}\n")
             file.write(f"Amount: 0\n")
             file.write(f"--------------------\n")
+        print("---------------")
         print(f"Welcome {username}")
         print(f"You currently have £0.00")
         return Account(0)

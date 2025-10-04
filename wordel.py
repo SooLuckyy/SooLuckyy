@@ -11,7 +11,7 @@ def main():
     end_game(wl, word)
 
 def start_game(target):
-    print(target) # Can uncomment to see the chosen word that the User must guess
+    # print(target) # Can uncomment to see the chosen word that the User must guess
     attempts = 5
     print_attempts(attempts)
     # Help visualise the "keyboard"
@@ -31,8 +31,7 @@ def start_game(target):
 
     while True:
         letter_set = letter_set_original.copy() # This is to "fix" the contents in a new loop while I "modify" during the loop
-        if user_guess == target:
-            return "W"
+
         for index, letter in enumerate(user_guess):
             if letter in target: # Checks if letter is part of "target"
                 if user_guess[index] == target[index]: # If letter is in the right position
@@ -47,14 +46,17 @@ def start_game(target):
                     letter_set[letter] -= 1
             else: # Populates incorrect letter
                 letters_output[index][0] = letter
-        attempts -= 1
-        if attempts == 0: # Checks if all lives are gone
-            return "L"
 
+        attempts -= 1
         print_attempts(attempts)
         print_letters(letters_output)
         alphabet, alphabet_dict = keyboard_visual(alphabet, alphabet_dict, letters_output)
-        
+
+        if user_guess == target:
+            return "W"
+        if attempts == 0: # Checks if all lives are gone
+            return "L"
+
         # Resets letters_output and User guess
         letters_output = [[" ", "grey50"], [" ", "grey50"], [" ", "grey50"], [" ", "grey50"], [" ", "grey50"]]
         user_guess = check_word(input("Guess: ").lower()).upper()
@@ -108,7 +110,7 @@ def print_letters(letters_output):
 
 def print_attempts(attempts_left):
     # Colours the number in "Attemps remaining: x"
-    attempts_colour = {5:"bold green", 4: "bold sea_green1", 3: "bold yellow", 2: "bold orange1", 1: "bold red1"}
+    attempts_colour = {5:"bold green", 4: "bold sea_green1", 3: "bold yellow", 2: "bold orange1", 1: "bold red1", 0: "purple4"}
     for key, value in attempts_colour.items():
         if attempts_left == key:
             console.print(f"Attempts remaining: [{value}]{attempts_left}[/]")

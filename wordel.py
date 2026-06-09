@@ -33,17 +33,20 @@ def start_game(target):
         letter_set = letter_set_original.copy() # This is to "fix" the contents in a new loop while I "modify" during the loop
 
         for index, letter in enumerate(user_guess):
-            if letter in target: # Checks if letter is part of "target"
+            if letter in target: # Checks if letter is green in "target"
                 if user_guess[index] == target[index]: # If letter is in the right position
                     letters_output[index][0] = letter
                     letters_output[index][1] = "green1"
                     letter_set[letter] -= 1
                     continue
-
-                else: # Correct letter, wrong position
-                    letters_output[index][0] = letter
-                    letters_output[index][1] = "yellow3"
-                    letter_set[letter] -= 1
+        # Checks if letter is yellow in "target"
+        for index, letter in enumerate(user_guess):
+            if letters_output[index][1] == "green1":
+                continue  # Green already handled as above
+            elif letter in letter_set and letter_set[letter] > 0:
+                letters_output[index][0] = letter
+                letters_output[index][1] = "yellow3"
+                letter_set[letter] -= 1
             else: # Populates incorrect letter
                 letters_output[index][0] = letter
 
@@ -119,14 +122,15 @@ def print_attempts(attempts_left):
 
 def keyboard_visual(alphabet, alphabet_dict, letters_output):
     # Prints the keyboard with the respective colour of the letter
+    priority = {"green1": 2, "yellow3": 1, "grey50": 0}
     for letter, colour in letters_output:
         if letter not in alphabet:
             continue
-        elif colour != "yellow3":
-            alphabet = alphabet.replace(letter, "") # Removes letter to for "faster" computation
-            alphabet_dict[letter] = colour # Colours the letter accordingly
-        else:
-            alphabet_dict[letter] = colour # Colours the letter accordingly
+        if colour not in ("green1", "yellow3", "grey50"):
+            continue
+        current = alphabet_dict[letter]
+        if priority.get(colour, -1) > priority.get(current, -1):
+            alphabet_dict[letter] = colour  # Changes the colour (green > yellow > grey)
 
     top_kb = "QWERTYUIOP"
     middle_kb = "ASDFGHJKL"
